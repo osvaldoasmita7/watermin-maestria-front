@@ -4,11 +4,10 @@ export const useNotification = () => {
   type NotificationPlacement = NotificationArgsProps["placement"];
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotification = (placement: NotificationPlacement) => {
+  const openNotification = (placement: NotificationPlacement, text: string) => {
     api.info({
       message: `Notification ${placement}`,
-      description:
-        "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+      description: text,
       placement,
       duration: 10,
     });

@@ -1,22 +1,44 @@
-import type { FormProps, NotificationArgsProps } from "antd";
-import { Button, Checkbox, Col, Form, Input, Row, notification } from "antd";
+import type { FormProps } from "antd";
+import { Button, Col, Form, Input, Row } from "antd";
 import { FieldType } from "../types/FieldInputType";
 import { InputCustom } from "./InputCustom";
-import { AppstoreAddOutlined, LoginOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { AppstoreAddOutlined } from "@ant-design/icons";
+import { useContext, useState } from "react";
 import { CardComponent } from "./CardComponent";
 import { useNotification } from "../hooks/useNotification";
+import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface IFormLogin {
-  name: string;
+  username: string;
   password: string;
   confirmPassword: string;
 }
 export const RegisterForm = () => {
+  const { register, setUser } = useContext(AuthContext);
   const { contextHolder, openNotification } = useNotification();
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    openNotification("top");
+  const navigate = useNavigate();
+
+  const onFinish: FormProps<FieldType>["onFinish"] = async () => {
+    try {
+      const resp = await register({
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+        username: form.username,
+        rememberme: true,
+      });
+      debugger;
+      console.log("Success:", resp);
+      openNotification("top", "bien");
+      if (resp?.token) {
+        setUser(resp);
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      console.log("error", error);
+      openNotification("top", error?.msg);
+      console.log("error", error);
+    }
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -25,11 +47,11 @@ export const RegisterForm = () => {
     console.log("Failed:", errorInfo);
   };
   const [form, setForm] = useState<IFormLogin>({
-    name: "",
+    username: "",
     password: "",
     confirmPassword: "",
   });
-  const { name, password, confirmPassword } = form;
+  const { username, password, confirmPassword } = form;
 
   const handleChange = (event: any) => {
     setForm({
@@ -60,7 +82,11 @@ export const RegisterForm = () => {
                 { required: true, message: "Por favor ingresa el usuario" },
               ]}
             >
-              <Input value={name} onChange={handleChange} />
+              <Input
+                value={username}
+                name={"username"}
+                onChange={handleChange}
+              />
             </InputCustom>
             <InputCustom
               label="Contraseña"
@@ -69,7 +95,12 @@ export const RegisterForm = () => {
                 { required: true, message: "Por favor ingresa tu contraseña" },
               ]}
             >
-              <Input value={password} onChange={handleChange} type="password" />
+              <Input
+                value={password}
+                name={"password"}
+                onChange={handleChange}
+                type="password"
+              />
             </InputCustom>
             <InputCustom
               label="Confirm. contraseña"
@@ -79,6 +110,7 @@ export const RegisterForm = () => {
               ]}
             >
               <Input
+                name={"confirmPassword"}
                 value={confirmPassword}
                 onChange={handleChange}
                 type="password"

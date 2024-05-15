@@ -3,20 +3,38 @@ import { Button, Checkbox, Col, Form, Input, Row, notification } from "antd";
 import { FieldType } from "../types/FieldInputType";
 import { InputCustom } from "./InputCustom";
 import { LoginOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { CardComponent } from "./CardComponent";
 import { useNotification } from "../hooks/useNotification";
+import { AuthContext } from "../contexts/AuthContext";
+import { IFormLogin } from "../interfaces";
+import { useNavigate } from "react-router-dom";
 
-interface IFormLogin {
-  name: string;
-  password: string;
-  rememberme: boolean;
-}
 export const DataForm = () => {
+  const { login, setUser } = useContext(AuthContext);
+  const [form, setForm] = useState<IFormLogin>({
+    username: "",
+    password: "",
+    rememberme: false,
+  });
+
   const { contextHolder, openNotification } = useNotification();
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    openNotification("top");
+  const navigate = useNavigate();
+
+  const onFinish: FormProps<FieldType>["onFinish"] = async () => {
+    try {
+      const resp = await login(form);
+      openNotification("top", "bien");
+      if (resp?.token) {
+        setUser(resp);
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      console.log("error", error);
+      openNotification("top", error?.msg);
+
+      console.log("error", error);
+    }
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -24,12 +42,8 @@ export const DataForm = () => {
   ) => {
     console.log("Failed:", errorInfo);
   };
-  const [form, setForm] = useState<IFormLogin>({
-    name: "",
-    password: "",
-    rememberme: false,
-  });
-  const { name, password, rememberme } = form;
+
+  const { username, password, rememberme } = form;
 
   const handleChange = (event: any) => {
     setForm({
@@ -66,7 +80,7 @@ export const DataForm = () => {
                 { required: true, message: "Por favor ingresa el usuario" },
               ]}
             >
-              <Input value={name} onChange={handleChange} />
+              <Input name="username" value={username} onChange={handleChange} />
             </InputCustom>
             <InputCustom
               label="Contraseña"
@@ -75,7 +89,7 @@ export const DataForm = () => {
                 { required: true, message: "Por favor ingresa tu contraseña" },
               ]}
             >
-              <Input value={password} onChange={handleChange} />
+              <Input name="password" value={password} onChange={handleChange} />
             </InputCustom>
 
             <InputCustom
@@ -84,7 +98,11 @@ export const DataForm = () => {
               name={"remember"}
               wrapperCol={{ offset: 8, span: 16 }}
             >
-              <Checkbox checked={rememberme} onChange={handleChangeCheckBox}>
+              <Checkbox
+                name="rememberme"
+                checked={rememberme}
+                onChange={handleChangeCheckBox}
+              >
                 Recuerdame
               </Checkbox>
             </InputCustom>

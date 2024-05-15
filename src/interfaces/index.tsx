@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 export interface ItemsInvoiceForm {
   label: string;
   name:
@@ -56,4 +58,27 @@ export interface IProduct {
   image: string;
   size: string;
   price: number;
+}
+export interface IFormLogin {
+  username: string;
+  password: string;
+  rememberme: boolean;
+  confirmPassword?: string;
+}
+export interface ILogin {
+  ok: boolean;
+  user: {
+    name: string;
+    id: number;
+    token: string;
+    active: number;
+    type_id: number;
+  };
+}
+export interface SocketIO extends Socket {
+  userId?: number;
+}
+export interface IOthers {
+  socket?: SocketIO;
+  online: boolean;
 }
