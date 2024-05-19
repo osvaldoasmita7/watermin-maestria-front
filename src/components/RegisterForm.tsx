@@ -27,7 +27,7 @@ export const RegisterForm = () => {
         username: form.username,
         rememberme: true,
       });
-      debugger;
+
       console.log("Success:", resp);
       openNotification("top", "bien");
       if (resp?.token) {

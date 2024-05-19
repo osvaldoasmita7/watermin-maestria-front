@@ -1,3 +1,4 @@
+import { Dispatch } from "react";
 import { Socket } from "socket.io-client";
 
 export interface ItemsInvoiceForm {
@@ -58,6 +59,7 @@ export interface IProduct {
   image: string;
   size: string;
   price: number;
+  id__company?: number;
 }
 export interface IFormLogin {
   username: string;
@@ -68,17 +70,22 @@ export interface IFormLogin {
 export interface ILogin {
   ok: boolean;
   user: {
-    name: string;
+    username: string;
     id: number;
     token: string;
     active: number;
     type_id: number;
+    companies?: companiesAttributes[];
   };
 }
-export interface SocketIO extends Socket {
-  userId?: number;
+export interface companiesAttributes {
+  id?: number;
+  name?: string;
 }
+
 export interface IOthers {
-  socket?: SocketIO;
+  socket?: Socket;
   online: boolean;
+  setRooms?: Dispatch<React.SetStateAction<any[]>>;
+  rooms?: any[];
 }

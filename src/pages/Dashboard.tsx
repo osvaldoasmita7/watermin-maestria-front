@@ -3,9 +3,12 @@ import { DashboardTemplate } from "../components/DashboardTemplate";
 import { itemsMenu } from "../data/itemsMenu";
 import { SocketContext } from "../contexts/SocketContext";
 import { Row } from "antd";
+import { AuthContext } from "../contexts/AuthContext";
 
 export const Dashboard = () => {
   const { socket } = useContext(SocketContext);
+  const { user } = useContext(AuthContext);
+  console.log("socket", socket);
   return (
     <div>
       <DashboardTemplate
@@ -25,9 +28,10 @@ export const Dashboard = () => {
               marginRight: 10,
             }}
           ></div>
-          Estatus del servicio: {socket?.connected ? "Ok" : "Inactivo"}
+          {/* Estatus del servicio: {socket?.connected ? "Ok" : "Inactivo"} */}
         </Row>
-        {/* <code>{JSON.stringify(user)}</code> */}
+        <code>{JSON.stringify(user)}</code>
+        {/* <code>{JSON.stringify(socket)}</code> */}
       </DashboardTemplate>
     </div>
   );

@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import io from "socket.io-client";
-import { SocketIO } from "../interfaces";
+import io, { Socket } from "socket.io-client";
 
 export const useSocket = (serverPath: string) => {
   // const socket = useMemo(() =>io.connect(serverPath, {transports: ["websocket"],}),[serverPath]);
-  const [socket, setSocket] = useState<SocketIO>();
+  const [socket, setSocket] = useState<Socket>();
   //   Para el status online
   const [online, setOnline] = useState(false);
 
@@ -12,7 +11,7 @@ export const useSocket = (serverPath: string) => {
   const connectSocket = useCallback(() => {
     const token = localStorage.getItem("token");
 
-    const socketTemp: SocketIO = io(serverPath, {
+    const socketTemp: Socket = io(serverPath, {
       transports: ["websocket"],
       autoConnect: true,
       forceNew: true,

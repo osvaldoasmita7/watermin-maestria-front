@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { useSocket } from "../hooks/useSocket";
 
@@ -11,6 +11,7 @@ interface Props {
   children: any;
 }
 export const SocketProvider = ({ children }: Props) => {
+  const [rooms, setRooms] = useState<any[]>([]);
   const { socket, online, connectSocket, disconnectSocket } =
     useSocket("localhost:3000");
   const { user } = useContext(AuthContext);
@@ -19,7 +20,7 @@ export const SocketProvider = ({ children }: Props) => {
     if (user?.token) {
       connectSocket();
     }
-  }, [user, connectSocket]);
+  }, [user?.token, connectSocket]);
 
   // Si está desconectado
   useEffect(() => {
@@ -28,8 +29,14 @@ export const SocketProvider = ({ children }: Props) => {
     }
   }, [user, disconnectSocket]);
 
+  useEffect(() => {
+    for (const room of rooms) {
+      socket?.on(room.name, room.callback);
+    }
+  }, [socket]);
+
   return (
-    <SocketContext.Provider value={{ socket, online }}>
+    <SocketContext.Provider value={{ socket, online, setRooms, rooms }}>
       {children}
     </SocketContext.Provider>
   );

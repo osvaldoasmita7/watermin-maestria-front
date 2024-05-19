@@ -1,4 +1,3 @@
-import React from "react";
 import { DashboardTemplate } from "../components/DashboardTemplate";
 import { itemsMenu } from "../data/itemsMenu";
 import { InvoicesList } from "../components/InvoicesList";
@@ -10,7 +9,7 @@ export const Invoices = () => {
       routes={["Pedidos"]}
       withRouteHeader={true}
     >
-      <InvoicesList></InvoicesList>
+      <InvoicesList />
     </DashboardTemplate>
   );
 };
