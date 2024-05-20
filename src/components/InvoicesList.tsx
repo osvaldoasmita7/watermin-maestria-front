@@ -94,9 +94,7 @@ export const InvoicesList = () => {
   }, [user?.companies, user?.id]);
 
   const socketEmit = (event: string) => {
-    socket?.emit(event, (payload: any) => {
-      console.log("Conectado21", payload);
-    });
+    socket?.emit(event, "Hola desde el front" + event);
   };
   useEffect(() => {
     if (setRooms && rooms) {
@@ -111,10 +109,6 @@ export const InvoicesList = () => {
           },
         ]);
     }
-    // if (socket?.connected)
-    //   socket?.on("conected_to_room", (payload) => {
-    //     console.log("conected_to_room", payload);
-    //   });
   }, [socket, rooms, setRooms]);
 
   const getData = useCallback(async () => {
@@ -159,8 +153,7 @@ export const InvoicesList = () => {
               style={{ width: 120, marginBottom: 30 }}
               onChange={(value: any) => {
                 if (value) {
-                  // getInvoices(`id_company=${value}`);
-                  // return unionRoom(`my_company_${value}`);
+                  getInvoices(`id_company=${value}`);
                 }
               }}
               loading={loading}
