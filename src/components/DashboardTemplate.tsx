@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Layout, Menu, theme } from "antd";
 import { FooterDashboard } from "./FooterDashboard";
 import { RouterHeader } from "./RouterHeader";
 import { MenuItem } from "../data/itemsMenu";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const { Header, Content, Sider } = Layout;
 
@@ -18,10 +20,12 @@ export const DashboardTemplate = ({
   withRouteHeader,
   routes,
 }: Props) => {
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const { resetState } = useContext(AuthContext);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -32,8 +36,15 @@ export const DashboardTemplate = ({
       >
         <div className="demo-logo-vertical" />
         <Menu
+          onClick={(item) => {
+            console.log("Item", item);
+            if (item.key !== "logout") return navigate(`/${item.key}`);
+            localStorage.clear();
+            resetState();
+            return navigate(`/`);
+          }}
           theme="dark"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={["0"]}
           mode="inline"
           items={itemsHeader}
         />

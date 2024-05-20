@@ -7,6 +7,7 @@ interface IAuth {
   login: (data: IFormLogin) => Promise<UserResponse>;
   verifyToken?: () => Promise<boolean>;
   register: (data: IFormLogin) => Promise<UserResponse>;
+  resetState: () => void;
 }
 interface IUser {
   id: number;
@@ -68,6 +69,7 @@ export const AuthContext = createContext<IAuth>({
     };
     return obj;
   },
+  resetState: () => {},
 });
 
 export const AuthProvider = ({ children }: Props) => {
@@ -174,6 +176,9 @@ export const AuthProvider = ({ children }: Props) => {
       throw error.response.data;
     }
   };
+  const resetState = () => {
+    setUser(INITIAL_AUTH);
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -182,6 +187,7 @@ export const AuthProvider = ({ children }: Props) => {
         login,
         register,
         verifyToken,
+        resetState,
       }}
     >
       {children}

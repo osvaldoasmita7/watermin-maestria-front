@@ -30,9 +30,9 @@ function getItem(
   } as MenuItem;
 }
 export const itemsMenu: MenuItem[] = [
-  getItem("Pedidos", "1", <BookOutlined />, [
-    getItem("Crear pedido", "2", <FileAddOutlined />),
-    getItem("Ver pedidos", "3", <EyeOutlined />),
+  getItem("Pedidos", "pedidos", <BookOutlined />, [
+    getItem("Crear pedido", "pedidos/cliente", <FileAddOutlined />),
+    getItem("Ver pedidos", "pedidos", <EyeOutlined />),
   ]),
-  getItem("Cerrar sesión", "4", <LogoutOutlined />),
+  getItem("Cerrar sesión", "logout", <LogoutOutlined />),
 ];
