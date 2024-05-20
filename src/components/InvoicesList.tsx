@@ -133,8 +133,8 @@ export const InvoicesList = () => {
 
   return (
     <>
-      {room}
-      <Row>
+      {/* {room} */}
+      {/* <Row>
         <div
           style={{
             backgroundColor: socket?.connected ? "green" : "red",
@@ -144,30 +144,30 @@ export const InvoicesList = () => {
             marginRight: 10,
           }}
         ></div>
-      </Row>
-      {user?.type_id === 2 && (
-        <>
-          <Space wrap>
-            <Select
-              defaultValue={user.companies?.length ? user.companies[0].id : ""}
-              style={{ width: 120, marginBottom: 30 }}
-              onChange={(value: any) => {
-                if (value) {
-                  getInvoices(`id_company=${value}`);
-                }
-              }}
-              loading={loading}
-              allowClear
-              options={user.companies?.map((company) => {
-                return {
-                  value: company.id,
-                  label: company.name,
-                };
-              })}
-            />
-          </Space>
-        </>
-      )}
+      </Row> */}
+      {/* {user?.type_id === 2 && ( */}
+      <>
+        <Space wrap>
+          <Select
+            defaultValue={user?.companies?.length ? user?.companies[0].id : ""}
+            style={{ width: 120, marginBottom: 30 }}
+            onChange={(value: any) => {
+              if (value) {
+                getInvoices(`id_company=${value}`);
+              }
+            }}
+            loading={loading}
+            allowClear
+            options={user?.companies?.map((company) => {
+              return {
+                value: company.id,
+                label: company.name,
+              };
+            })}
+          />
+        </Space>
+      </>
+      {/* )} */}
       <List
         grid={{
           gutter: 16,
@@ -299,7 +299,7 @@ export const InvoicesList = () => {
           </List.Item>
         )}
       />
-      <code>{JSON.stringify(user)}</code>
+      {/* <code>{JSON.stringify(user)}</code> */}
     </>
   );
 };

@@ -9,6 +9,8 @@ export interface ItemsInvoiceForm {
     | "confirmPassword"
     | "postalCode"
     | "remember"
+    | "name"
+    | ["name"]
     | ["username"]
     | ["password"]
     | ["remember"]
@@ -88,4 +90,58 @@ export interface IOthers {
   online: boolean;
   setRooms?: Dispatch<React.SetStateAction<any[]>>;
   rooms?: any[];
+}
+
+export interface IAddressForm {
+  name: string;
+  street: string;
+  ext: string;
+  interior: string;
+  postalCode: string;
+  colonia: string;
+  delegacion: string;
+  city: string;
+}
+
+export interface IPostalCode {
+  id_cat: number;
+  cp: string;
+  colonia: string;
+  municipio: string;
+  estado: string;
+  ciudad: string;
+}
+export interface invoicesAttributes {
+  id?: number;
+  date?: string;
+  time?: string;
+  total?: number;
+  createdBy?: number;
+  created_by?: number;
+  idStatus?: number;
+  id_company?: number;
+
+  name?: string;
+  postalcode?: string;
+  street?: string;
+  exterior?: string;
+  interior?: string;
+  city?: string;
+  delegation?: string;
+  cologne?: string;
+}
+export interface ICart {
+  idProduct: number;
+  name: string;
+  quantity: number;
+  total: number;
+  price: number;
+}
+export interface productsAttributes {
+  idProduct?: number;
+  name?: string;
+  image?: string;
+  size?: string;
+  price?: number;
+  id__company?: number;
 }

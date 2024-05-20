@@ -3,7 +3,7 @@ import { ItemsInvoiceForm } from "../interfaces";
 export const items: ItemsInvoiceForm[] = [
   {
     label: "Nombre",
-    name: "username",
+    name: "name",
     rules: [
       {
         required: true,
@@ -23,6 +23,41 @@ export const items: ItemsInvoiceForm[] = [
     ],
     type: "input",
     valueType: "number",
+  },
+  {
+    label: "Colonia",
+    name: "colonia",
+    rules: [
+      {
+        required: true,
+        message: "Por favor selecciona la colonia",
+      },
+    ],
+    type: "select",
+  },
+  {
+    label: "Ciudad",
+    name: "city",
+    rules: [
+      {
+        required: true,
+        message: "Por favor ingresa el código postal para continuar",
+      },
+    ],
+    type: "input",
+    disabled: true,
+  },
+  {
+    label: "Delegación/Alcaldía",
+    name: "delegacion",
+    rules: [
+      {
+        required: true,
+        message: "Por favor ingresa el código postal para continuar",
+      },
+    ],
+    type: "input",
+    disabled: true,
   },
   {
     label: "Calle",
@@ -50,40 +85,5 @@ export const items: ItemsInvoiceForm[] = [
     label: "Interior",
     name: "interior",
     type: "input",
-  },
-  {
-    label: "Ciudad",
-    name: "city",
-    rules: [
-      {
-        required: true,
-        message: "Por favor ingresa el código postal para continuar",
-      },
-    ],
-    type: "input",
-    // disabled: true,
-  },
-  {
-    label: "Delegación/Alcaldía",
-    name: "delegacion",
-    rules: [
-      {
-        required: true,
-        message: "Por favor ingresa el código postal para continuar",
-      },
-    ],
-    type: "input",
-    // disabled: true,
-  },
-  {
-    label: "Colonia",
-    name: "colonia",
-    rules: [
-      {
-        required: true,
-        message: "Por favor selecciona la colonia",
-      },
-    ],
-    type: "select",
   },
 ];

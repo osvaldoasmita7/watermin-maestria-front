@@ -89,7 +89,11 @@ export const DataForm = () => {
                 { required: true, message: "Por favor ingresa tu contraseña" },
               ]}
             >
-              <Input name="password" value={password} onChange={handleChange} />
+              <Input.Password
+                name="password"
+                value={password}
+                onChange={handleChange}
+              />
             </InputCustom>
 
             <InputCustom
