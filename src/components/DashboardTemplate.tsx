@@ -50,7 +50,7 @@ export const DashboardTemplate = ({
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
+        {/* <Header style={{ padding: 0, background: colorBgContainer }} /> */}
         <Content style={{ margin: "0 16px" }}>
           {withRouteHeader && <RouterHeader routes={routes || []} />}
 

@@ -1,79 +1,41 @@
-import { Button, Card, Col, List, Row, Select, Space } from "antd";
+import { Button, Card, Col, List, Row, Select, Space, Statistic } from "antd";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { IProduct } from "../interfaces";
+import { companiesAttributes, IInvoice, IOrders } from "../interfaces";
 import {
   CheckCircleOutlined,
   DeleteRowOutlined,
-  EyeOutlined,
-  PushpinOutlined,
   SendOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import axios from "axios";
 import { AuthContext } from "../contexts/AuthContext";
-import { Link } from "react-router-dom";
 import { SocketContext } from "../contexts/SocketContext";
-interface IInvoice {
-  id: number;
-  date: string;
-  time: string;
-  total: number;
-  created_by?: number;
-  id_status?: number;
-  name: string;
-  postalcode: string;
-  street: string;
-  exterior: string;
-  interior: string;
-  city: string;
-  delegation: string;
-  cologne: string;
-  id_company: string;
-  orders: IOrders[];
-  id_status_status: IStatus;
-}
-export interface IStatus {
-  id?: number;
-  name: string;
-}
-interface IOrders {
-  idOrder: number;
-  quantity: number;
-  idProduct?: number;
-  idProduct_product: IProduct;
-}
+import { ProductRequired } from "./ProductRequired";
+import { LinkToMaps } from "./LinkToMaps";
+import { useDatabase } from "../hooks/useDatabase";
+import { Link } from "react-router-dom";
+
 export const InvoicesList = () => {
   const { socket, setRooms, rooms } = useContext(SocketContext);
+  const { getInvoices, updateInvoice, getcompaniesByUserId } = useDatabase();
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
   const [loading, setLoading] = useState(false);
   const [room, setRoom] = useState("");
+  const [companies, setCompanies] = useState<companiesAttributes[]>([]);
+  const [companySelected, setCompanySelected] = useState(null);
 
   const { user } = useContext(AuthContext);
-  const getInvoices = useCallback(async (params: string = "") => {
+  const getListInvoices = useCallback(async (params?: string) => {
     setLoading(true);
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: "http://localhost:3000/api/invoices?" + params,
-      headers: {
-        "Content-Type": "application/json",
-        token: localStorage.getItem("token"),
-      },
-    };
-    const resp = await axios.request(config);
+    const invoices_response = await getInvoices(params);
     setLoading(false);
-    if (!resp.data?.ok) throw "Error en la petición";
-    const response = resp.data;
-    const invoices_response = response.invoices as IInvoice[];
-    console.log(invoices_response);
     setInvoices([...invoices_response]);
   }, []);
-  useEffect(() => {
-    console.log("CAmbió room", room);
-  }, [room]);
-  useEffect(() => {
-    console.log("user", user);
-  }, [user]);
+  const getCompanies = useCallback(async () => {
+    setLoading(true);
+    const resp = await getcompaniesByUserId(user?.id || 0);
+    setLoading(false);
+    setCompanies([...resp]);
+  }, []);
 
   useEffect(() => {
     console.log("entró");
@@ -81,6 +43,7 @@ export const InvoicesList = () => {
       case 1:
         setRoom("my_invoices_" + user.id);
         socketEmit("my_invoices_" + user.id);
+        getCompanies();
         break;
       case 2:
         if (user?.companies?.length) {
@@ -115,10 +78,10 @@ export const InvoicesList = () => {
     if (user?.id) {
       switch (user.type_id) {
         case 1:
-          await getInvoices(`created_by=${user?.id}`);
+          await getListInvoices(`created_by=${user?.id}`);
           break;
         case 2:
-          await getInvoices(
+          await getListInvoices(
             `id_company=${user?.companies?.length && user?.companies[0]?.id}`
           );
           break;
@@ -127,54 +90,73 @@ export const InvoicesList = () => {
       }
     }
   }, [user]);
+  const updateStatus = async (item: IInvoice, status: number) => {
+    await updateInvoice({ ...item, id_status: status });
+    getData();
+  };
+  const drawCompanies = () => {
+    if (user?.type_id === 2)
+      return user?.companies?.map((company) => {
+        return {
+          value: company.id,
+          label: company.name,
+        };
+      });
+    return companies.map((x) => ({ value: x.id, label: x.name }));
+  };
   useEffect(() => {
     getData();
   }, []);
+  const timeoutID = setTimeout(() => {
+    getInvoicesFiltered(companySelected || "");
+  }, 20000);
+  useEffect(() => {
+    return () => {
+      clearTimeout(timeoutID);
+    };
+  }, []);
+  const getInvoicesFiltered = async (value?: string) => {
+    if (value) {
+      switch (user?.type_id) {
+        case 1:
+          await getListInvoices(`created_by=${user?.id}&&id_company=${value}`);
+          break;
+        case 2:
+          await getListInvoices(`id_company=${value}`);
+          break;
+        default:
+          break;
+      }
+    } else {
+      getData();
+    }
+  };
 
   return (
     <>
-      {/* {room} */}
-      {/* <Row>
-        <div
-          style={{
-            backgroundColor: socket?.connected ? "green" : "red",
-            height: 20,
-            width: 20,
-            borderRadius: "100%",
-            marginRight: 10,
-          }}
-        ></div>
-      </Row> */}
-      {/* {user?.type_id === 2 && ( */}
       <>
         <Space wrap>
           <Select
             defaultValue={user?.companies?.length ? user?.companies[0].id : ""}
             style={{ width: 120, marginBottom: 30 }}
-            onChange={(value: any) => {
-              if (value) {
-                getInvoices(`id_company=${value}`);
-              }
+            onChange={async (value: any) => {
+              setCompanySelected(value);
+              getInvoicesFiltered(value);
             }}
             loading={loading}
             allowClear
-            options={user?.companies?.map((company) => {
-              return {
-                value: company.id,
-                label: company.name,
-              };
-            })}
+            placeholder="Seleccionar"
+            options={drawCompanies()}
           />
         </Space>
       </>
-      {/* )} */}
       <List
         grid={{
           gutter: 16,
           xs: 1,
-          sm: 2,
-          md: 3,
-          lg: 3,
+          sm: 1,
+          md: 1,
+          lg: 2,
           xl: 3,
           xxl: 5,
         }}
@@ -183,20 +165,37 @@ export const InvoicesList = () => {
           <List.Item>
             <Card
               style={{ padding: 10 }}
-              // extra={
-              //   <Button>
-              //     <EyeOutlined />
-              //     Ver más
-              //   </Button>
-              // }
               title={
-                <div key={item.id}>
-                  No. {item.id} <br />
-                  Fecha: {item.date} <br />
-                  Hora: {item.time}
-                  <h5 className="text-success">${item.total}</h5>
-                  <h5 className="text-info">{item.id_status_status.name}</h5>
-                </div>
+                <Row key={item.id}>
+                  <Statistic title="No. " value={item.id} className="me-4" />
+                  <Statistic
+                    title="Fecha "
+                    value={item.date}
+                    className="me-4"
+                  />
+                  <Statistic title="Hora " value={item.time} className="me-4" />
+                  <Statistic
+                    title="Estatus "
+                    valueStyle={{ color: "#3f8600" }}
+                    value={item.id_status_status.name}
+                    className="me-4"
+                  />
+
+                  <Statistic
+                    title="Total "
+                    valueStyle={{ color: "#3f8600" }}
+                    value={`$${item.total}`}
+                    className="me-4"
+                  />
+                  <Link to={`/pedidos/seguimiento?id=${item.id}`}>
+                    <Statistic
+                      title="Ver más "
+                      valueStyle={{ color: "black" }}
+                      value={` `}
+                      className="me-4"
+                    />
+                  </Link>
+                </Row>
               }
             >
               <Row key={index}>
@@ -206,12 +205,13 @@ export const InvoicesList = () => {
                     {item.name}
                   </p>
                   <p>
-                    <Link
-                      to={`https://www.google.com.mx/maps/search/${item.street} ${item.exterior}. ${item.cologne}. ${item.delegation}. ${item.postalcode}. México`}
-                    >
-                      <PushpinOutlined style={{ marginRight: 10 }} />
-                      Ubicación aproximada
-                    </Link>
+                    <LinkToMaps
+                      cologne={item.cologne}
+                      delegation={item.delegation}
+                      exterior={item.exterior}
+                      postalcode={item.postalcode}
+                      street={item.street}
+                    />
                   </p>
                 </Col>
                 <p>
@@ -221,77 +221,81 @@ export const InvoicesList = () => {
                 {!item.orders.length && (
                   <h5>No hay productos asignados a este pedido</h5>
                 )}
-                {item.orders.map((order: IOrders, index: number) => {
-                  return (
-                    <Col xl={8} className=" mx-2" key={index}>
-                      <div className="container">
-                        <div className="bg-red1">
-                          <img
-                            src={order.idProduct_product.image}
-                            style={{ width: 120, height: 150 }}
-                          />
-
-                          <p className="centered px-1 py-3">
-                            <strong>{order.quantity}</strong>
-                          </p>
-                        </div>
-                      </div>
-                    </Col>
-                  );
+                {item.orders.map((order: IOrders) => {
+                  return <ProductRequired product={order} />;
                 })}
               </Row>
               <Row>
                 <Col className="mt-3">
-                  {item.id_status === 1 && (
+                  {user?.type_id === 2 ? (
                     <>
-                      <Button className="me-2" type="primary">
-                        <SendOutlined />
-                        Recibido
-                      </Button>
-
+                      {item.id_status === 1 && (
+                        <>
+                          <Button
+                            className="me-2"
+                            type="primary"
+                            onClick={async () => {
+                              await updateStatus(item, 2);
+                            }}
+                          >
+                            <SendOutlined />
+                            Recibido
+                          </Button>
+                        </>
+                      )}
+                      {item.id_status === 2 && (
+                        <>
+                          <Button
+                            className="me-2"
+                            type="primary"
+                            onClick={async () => {
+                              await updateStatus(item, 3);
+                            }}
+                          >
+                            <SendOutlined />
+                            Enviar
+                          </Button>
+                        </>
+                      )}
+                      {item.id_status === 3 && (
+                        <>
+                          <Button
+                            className="me-2"
+                            type="primary"
+                            style={{ backgroundColor: "green" }}
+                            onClick={async () => {
+                              await updateStatus(item, 4);
+                            }}
+                          >
+                            <CheckCircleOutlined />
+                            Completar
+                          </Button>
+                        </>
+                      )}
                       <Button
                         className="me-2"
                         style={{ backgroundColor: "red", color: "white" }}
+                        onClick={async () => {
+                          await updateStatus(item, 5);
+                        }}
                       >
                         <DeleteRowOutlined />
                         Cancelar
                       </Button>
                     </>
-                  )}
-                  {item.id_status === 2 && (
-                    <>
-                      <Button className="me-2" type="primary">
-                        <SendOutlined />
-                        Enviar
-                      </Button>
-
+                  ) : (
+                    (item.id_status === 1 || item.id_status === 2) ?? (
                       <Button
                         className="me-2"
                         style={{ backgroundColor: "red", color: "white" }}
+                        onClick={async () => {
+                          await updateStatus(item, 5);
+                        }}
                       >
                         <DeleteRowOutlined />
                         Cancelar
                       </Button>
-                    </>
-                  )}
-                  {item.id_status === 3 && (
-                    <>
-                      <Button
-                        className="me-2"
-                        type="primary"
-                        style={{ backgroundColor: "green" }}
-                      >
-                        <CheckCircleOutlined />
-                        Completar
-                      </Button>
-                      <Button
-                        className="me-2"
-                        style={{ backgroundColor: "red", color: "white" }}
-                      >
-                        <DeleteRowOutlined />
-                        Cancelar
-                      </Button>
-                    </>
+                    )
                   )}
                 </Col>
               </Row>
@@ -299,7 +303,6 @@ export const InvoicesList = () => {
           </List.Item>
         )}
       />
-      {/* <code>{JSON.stringify(user)}</code> */}
     </>
   );
 };

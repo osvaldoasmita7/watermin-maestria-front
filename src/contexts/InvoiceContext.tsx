@@ -14,38 +14,40 @@ interface Props {
 }
 
 const INITIAL_STATE: invoicesAttributes = {
-  id: 0,
-  date: "",
-  time: "",
-  total: 0,
-  createdBy: 0,
-  created_by: 0,
-  idStatus: 0,
-  id_company: 0,
+  // id: 0,
+  // date: "",
+  // time: "",
+  // total: 0,
+  // createdBy: 0,
+  // created_by: 0,
+  // idStatus: 0,
+  // id_company: 0,
 
-  name: "",
-  postalcode: "",
-  street: "",
-  exterior: "",
-  interior: "",
-  city: "",
-  delegation: "",
-  cologne: "",
-};
+  // name: "",
+  // postalcode: "",
+  // street: "",
+  // exterior: "",
+  // interior: "",
+  // city: "",
+  // delegation: "",
+  // cologne: "",
+  "city": "Ciudad de México", "cologne": "El Rodeo", "created_by": 9, "createdBy": 9, "delegation": "Iztacalco", "exterior": "123", "id": 0, "id_company": 1, "idStatus": -1, "interior": "123", "name": "AS", "postalcode": "8510", "street": "ASDSA", "total": 0
+}
+  ;
 export const InvoiceContext = createContext<IAuth>({
   invoice: INITIAL_STATE,
-  setInvoice: () => {},
+  setInvoice: () => { },
 
-  saveInvoice: async ({}: invoicesAttributes): Promise<invoicesAttributes> => {
+  saveInvoice: async ({ }: invoicesAttributes): Promise<invoicesAttributes> => {
     return INITIAL_STATE;
   },
-  getInvoice: async ({}: number): Promise<invoicesAttributes> => {
+  getInvoice: async ({ }: number): Promise<invoicesAttributes> => {
     return INITIAL_STATE;
   },
-  getLastInvoice: async ({}: number): Promise<invoicesAttributes> => {
+  getLastInvoice: async ({ }: number): Promise<invoicesAttributes> => {
     return INITIAL_STATE;
   },
-  resetState: () => {},
+  resetState: () => { },
 });
 
 export const InvoiceProvider = ({ children }: Props) => {

@@ -18,7 +18,13 @@ export const Dashboard = () => {
         routes={["Inicio"]}
       >
         <h1 className="text-center text-disabled">Bienvenido a watermin</h1>
-        <Row>
+        <p className="col-md-6 col-lg-4 mx-auto mt-5">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure sint
+          omnis officia odit voluptatum itaque officiis, voluptate, delectus
+          numquam labore, praesentium aliquid ipsa laborum incidunt reiciendis
+          accusamus suscipit. Provident, omnis!
+        </p>
+        {/* <Row>
           <div
             style={{
               backgroundColor: socket?.connected ? "green" : "red",
@@ -28,9 +34,9 @@ export const Dashboard = () => {
               marginRight: 10,
             }}
           ></div>
-          {/* Estatus del servicio: {socket?.connected ? "Ok" : "Inactivo"} */}
-        </Row>
-        <code>{JSON.stringify(user)}</code>
+          Estatus del servicio: {socket?.connected ? "Ok" : "Inactivo"}
+        </Row> */}
+        {/* <code>{JSON.stringify(user)}</code> */}
         {/* <code>{JSON.stringify(socket)}</code> */}
       </DashboardTemplate>
     </div>

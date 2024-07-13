@@ -145,3 +145,32 @@ export interface productsAttributes {
   price?: number;
   id__company?: number;
 }
+export interface IOrders {
+  idOrder: number;
+  quantity: number;
+  idProduct?: number;
+  idProduct_product: IProduct;
+}
+export interface IInvoice {
+  id: number;
+  date: string;
+  time: string;
+  total: number;
+  created_by?: number;
+  id_status?: number;
+  name: string;
+  postalcode: string;
+  street: string;
+  exterior: string;
+  interior: string;
+  city: string;
+  delegation: string;
+  cologne: string;
+  id_company: string;
+  orders: IOrders[];
+  id_status_status: IStatus;
+}
+export interface IStatus {
+  id?: number;
+  name: string;
+}

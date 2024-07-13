@@ -1,15 +1,9 @@
-import { Button, Col, List, Row, Select, Typography } from "antd";
+import { Col, List, Row, Select } from "antd";
 
-import { MinusCircleOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useState } from "react";
 
 import { Product } from "./Product";
-import {
-  ICart,
-  companiesAttributes,
-  invoicesAttributes,
-  productsAttributes,
-} from "../interfaces";
+import { ICart, companiesAttributes, productsAttributes } from "../interfaces";
 import { InvoiceContext } from "../contexts/InvoiceContext";
 import { useDatabase } from "../hooks/useDatabase";
 import { useCart } from "../hooks/useCart";
@@ -17,7 +11,7 @@ import { Address } from "./Address";
 import { TotalSum } from "./TotalSum";
 import { ItemCart } from "./ItemCart";
 import { useNavigate } from "react-router-dom";
-// const INITIAL_STATE: invoicesAttributes = {
+
 //   city: "Ciudad de México",
 //   cologne: "El Rodeo",
 //   created_by: 1,
@@ -52,10 +46,6 @@ export const InvoiceForm = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   setInvoice(INITIAL_STATE);
-  // }, [INITIAL_STATE]);
-
   const getProducts = async (companyId: string) => {
     const prods: productsAttributes[] = await getProductsByCompanyId(companyId);
     setProducts([...prods]);
@@ -64,6 +54,8 @@ export const InvoiceForm = () => {
   };
   const SaveInvoice = async () => {
     try {
+      console.log(cart);
+      // return;
       const { id } = await saveInvoice({ invoice, orders: cart });
       if (id) {
         alert("Orden creada con éxito");
@@ -76,6 +68,7 @@ export const InvoiceForm = () => {
   };
   return (
     <>
+      {/* {JSON.stringify(invoice)} */}
       <Address
         city={invoice?.city || ""}
         cologne={invoice?.cologne || ""}
@@ -131,7 +124,7 @@ export const InvoiceForm = () => {
         <Col className="col-12 col-md-6 col-lg-9 mx-auto row">
           {/*  */}
           {products.map((product) => (
-            <Product addCart={addCart} product={product}></Product>
+            <Product onClick={addCart} product={product}></Product>
           ))}
         </Col>
       </Row>

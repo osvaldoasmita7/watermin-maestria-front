@@ -7,6 +7,7 @@ import { CreateInvoice } from "../pages/CreateInvoice";
 import { FollowInvoice } from "../pages/FollowInvoice";
 import { NotFound } from "../pages/NotFound";
 import { Invoices } from "../pages/Invoices";
+import { InvoiceDetails } from "../pages/InvoiceDetails";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
     path: "/pedidos",
     element: <Invoices />,
   },
+
   {
     path: "*",
     element: <NotFound />,
