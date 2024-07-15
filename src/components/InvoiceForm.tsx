@@ -68,7 +68,6 @@ export const InvoiceForm = () => {
   };
   return (
     <>
-      {/* {JSON.stringify(invoice)} */}
       <Address
         city={invoice?.city || ""}
         cologne={invoice?.cologne || ""}

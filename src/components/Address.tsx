@@ -1,6 +1,4 @@
-import { Card, Col, Row, Statistic } from "antd";
-import { invoicesAttributes } from "../interfaces";
-import { ArrowUpOutlined } from "@ant-design/icons";
+import { Card } from "antd";
 interface Props {
   city: string;
   cologne: string;
